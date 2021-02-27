@@ -1,0 +1,18 @@
+{
+    "apps": [{
+      "name": "aciksozlukBackend",
+      "script": "app.js",
+      "exec_mode": "cluster",
+      "listen_timeout" : 5000,
+      "max_memory_restart": "500M",
+      "exp_backoff_restart_delay": 100,
+      "watch": true,
+      "ignore_watch" : ["node_modules"],
+      "watch_options": {
+        "usePolling": true
+      },
+      "instances": 1,
+      "wait_ready": true,
+      "restart_delay": 5000
+    }]
+  }

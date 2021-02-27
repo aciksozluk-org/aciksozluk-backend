@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: aciksozluk-db
+    image: postgres
+    environment:
+      POSTGRES_USER: aciksozluk
+      POSTGRES_PASSWORD: aciksozluk
+    ports: 
+      - '5432:5432'
+    # volumes:
+    #   - aciksozluk-db:/var/lib/postgresql/data
+    networks:
+      main:
+        aliases:
+          - aciksozluk-db
+
+  backend:
+    container_name: aciksozluk-backend
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/api/
+      - /api/node_modules
+    ports:
+      - 3000
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    restart: on-failure
+    networks:
+      main:
+        aliases:
+          - aciksozluk-backend
+
+  nginx:
+    container_name: aciksozluk-nginx
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - backend
+    networks:
+      main:
+        aliases:
+          - aciksozluk-nginx
+
+volumes:
+  postgres:
+  backend:
+  nginx:
+
+networks:
+  main:
