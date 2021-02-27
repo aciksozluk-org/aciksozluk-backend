@@ -12,7 +12,7 @@
  Target Server Version : 130002
  File Encoding         : 65001
 
- Date: 27/02/2021 20:50:32
+ Date: 27/02/2021 23:48:48
 */
 
 
@@ -29,42 +29,69 @@ CACHE 1;
 ALTER SEQUENCE "public"."users_id_seq" OWNER TO "aciksozluk";
 
 -- ----------------------------
--- Table structure for dictionary
+-- Table structure for Dictionary
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."dictionary";
-CREATE TABLE "public"."dictionary" (
+DROP TABLE IF EXISTS "public"."Dictionary";
+CREATE TABLE "public"."Dictionary" (
   "id" int4 NOT NULL,
   "word" text COLLATE "pg_catalog"."default" NOT NULL,
   "history" text COLLATE "pg_catalog"."default",
   "origin" text COLLATE "pg_catalog"."default",
   "annotation" text COLLATE "pg_catalog"."default",
   "similars" text COLLATE "pg_catalog"."default",
-  "pronunciation" text COLLATE "pg_catalog"."default"
+  "pronunciation" text COLLATE "pg_catalog"."default",
+  "aproved" bool NOT NULL,
+  "creationAt" date NOT NULL,
+  "updateAt" date NOT NULL,
+  "approvedAt" date,
+  "approvedUser" int4 NOT NULL
 )
 ;
-ALTER TABLE "public"."dictionary" OWNER TO "aciksozluk";
+ALTER TABLE "public"."Dictionary" OWNER TO "aciksozluk";
 
 -- ----------------------------
--- Records of dictionary
+-- Records of Dictionary
 -- ----------------------------
 BEGIN;
 COMMIT;
 
 -- ----------------------------
--- Table structure for users
+-- Table structure for Roles
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."users";
-CREATE TABLE "public"."users" (
+DROP TABLE IF EXISTS "public"."Roles";
+CREATE TABLE "public"."Roles" (
+  "id" int4 NOT NULL,
+  "role_name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "createdAt" date NOT NULL,
+  "updatedAt" date NOT NULL
+)
+;
+ALTER TABLE "public"."Roles" OWNER TO "aciksozluk";
+
+-- ----------------------------
+-- Records of Roles
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for Users
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."Users";
+CREATE TABLE "public"."Users" (
   "id" int4 NOT NULL DEFAULT nextval('users_id_seq'::regclass),
   "username" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "email" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+  "email" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "role" bool NOT NULL,
+  "createdAt" date NOT NULL,
+  "updatedAt" date NOT NULL
 )
 ;
-ALTER TABLE "public"."users" OWNER TO "aciksozluk";
+ALTER TABLE "public"."Users" OWNER TO "aciksozluk";
 
 -- ----------------------------
--- Records of users
+-- Records of Users
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -73,32 +100,44 @@ COMMIT;
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."users_id_seq"
-OWNED BY "public"."users"."id";
+OWNED BY "public"."Users"."id";
 SELECT setval('"public"."users_id_seq"', 2, false);
 
 -- ----------------------------
--- Indexes structure for table dictionary
+-- Indexes structure for table Dictionary
 -- ----------------------------
-CREATE UNIQUE INDEX "word" ON "public"."dictionary" USING btree (
+CREATE UNIQUE INDEX "word" ON "public"."Dictionary" USING btree (
   "word" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
 );
 
 -- ----------------------------
--- Primary Key structure for table dictionary
+-- Primary Key structure for table Dictionary
 -- ----------------------------
-ALTER TABLE "public"."dictionary" ADD CONSTRAINT "dictionary_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."Dictionary" ADD CONSTRAINT "dictionary_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
--- Indexes structure for table users
+-- Indexes structure for table Roles
 -- ----------------------------
-CREATE UNIQUE INDEX "email" ON "public"."users" USING btree (
+CREATE UNIQUE INDEX "role_name" ON "public"."Roles" USING btree (
+  "role_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+);
+
+-- ----------------------------
+-- Primary Key structure for table Roles
+-- ----------------------------
+ALTER TABLE "public"."Roles" ADD CONSTRAINT "Roles_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Indexes structure for table Users
+-- ----------------------------
+CREATE UNIQUE INDEX "email" ON "public"."Users" USING btree (
   "email" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
 );
-CREATE UNIQUE INDEX "username" ON "public"."users" USING btree (
+CREATE UNIQUE INDEX "username" ON "public"."Users" USING btree (
   "username" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
 );
 
 -- ----------------------------
--- Primary Key structure for table users
+-- Primary Key structure for table Users
 -- ----------------------------
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."Users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
